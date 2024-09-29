@@ -1,0 +1,31 @@
+# [OPTIONAL] AWS Environment
+env:
+  account: "XXXXXXXXXXXX"
+  region: ap-northeast-1
+
+# Stack name
+stackName: slack-chatbot-bedrock
+
+# [OPTIONAL] Log level
+logLevel: INFO
+
+# [OPTIONAL] Custom domain
+domainName: slack-chatbot-bedrock.example.com
+certificateArn: arn:aws:acm:ap-northeast-1:XXXXXXXXXXXX:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# Slack signing secret
+slackSigningSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# Slack bot token
+slackBotToken: xoxb-xxxxxxxxxxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxx
+# Slack bot member ID
+slackBotMemberId: XXXXXXXXXXX
+
+# [OPTIONAL] Prompt template
+prompt: ""
+
+# Amazon Bedrock
+bedrock:
+  # Model ID
+  model: "anthropic.claude-v2:1"
+  # Streaming mode
+  stream: false
