@@ -23,7 +23,7 @@ Add an app with the following details at https://api.slack.com/apps.
 - Event Subscriptions
   - Request URL: `{BaseUrl}/slack/events`
   - Subscribe to bot events
-    - `message.channels`
+    - `app_mention`
 
 Notes
 
