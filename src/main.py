@@ -7,14 +7,14 @@ import boto3
 from slack_bolt import App, Ack, Say
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 
-LOG_LEVEL = os.environ.get("LOG_LEVEL")
+LOG_LEVEL = os.environ.get("LOG_LEVEL", logging.INFO)
 
-SLACK_SIGNING_SECRET = os.environ.get("SLACK_SIGNING_SECRET")
-SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
-SLACK_BOT_MEMBER_ID = os.environ.get("SLACK_BOT_MEMBER_ID")
+SLACK_SIGNING_SECRET = os.environ.get("SLACK_SIGNING_SECRET")  # required
+SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")  # required
+SLACK_BOT_MEMBER_ID = os.environ.get("SLACK_BOT_MEMBER_ID")  # required
 
-PROMPT = os.environ.get("PROMPT")
-BEDROCK_SETTINGS = os.environ.get("BEDROCK_SETTINGS")
+PROMPT = os.environ.get("PROMPT", "")
+BEDROCK_SETTINGS = os.environ.get("BEDROCK_SETTINGS")  # required
 
 TEXT_THINKING = "Thinking..."
 STREAM_INTERVAL = 3  # 3 秒間隔でメッセージを更新
