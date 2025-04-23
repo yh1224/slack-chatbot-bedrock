@@ -2,10 +2,11 @@ import * as cdk from "aws-cdk-lib";
 import {Construct} from "constructs";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
+import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as lambda_python from "@aws-cdk/aws-lambda-python-alpha";
 import * as logs from "aws-cdk-lib/aws-logs";
+import * as imagedeploy from "cdk-docker-image-deployment";
 import {Config} from "./config";
 
 type SlackChatbotBedrockStackProps = cdk.StackProps & {
@@ -18,10 +19,19 @@ export class SlackChatbotBedrockStack extends cdk.Stack {
 
         const config = props.config;
 
+        const repository = new ecr.Repository(this, "Repository", {
+            emptyOnDelete: true,
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+        });
+        const imageDeployment = new imagedeploy.DockerImageDeployment(this, "ImageDeployment", {
+            source: imagedeploy.Source.directory("../../src"),
+            destination: imagedeploy.Destination.ecr(repository, {tag: "latest"}),
+        });
+
         // Lambda Function
-        const slackChatbotFunction = new lambda_python.PythonFunction(this, "SlackChatbotFunction", {
+        const slackChatbotFunction = new lambda.DockerImageFunction(this, "SlackChatbotFunction", {
             architecture: lambda.Architecture.ARM_64,
-            entry: "../../src",
+            code: lambda.DockerImageCode.fromEcr(repository, {tag: "latest"}),
             environment: {
                 LOG_LEVEL: config.logLevel || "INFO",
                 SLACK_SIGNING_SECRET: config.slackSigningSecret,
@@ -30,12 +40,10 @@ export class SlackChatbotBedrockStack extends cdk.Stack {
                 PROMPT: config.prompt || "",
                 BEDROCK_SETTINGS: JSON.stringify(config.bedrock),
             },
-            handler: "lambda_handler",
-            index: "main.py",
             logRetention: logs.RetentionDays.ONE_WEEK,
-            runtime: lambda.Runtime.PYTHON_3_12,
             timeout: cdk.Duration.minutes(1),
         });
+        slackChatbotFunction.node.addDependency(imageDeployment);
         slackChatbotFunction.addToRolePolicy(new iam.PolicyStatement({
             actions: [
                 "bedrock:InvokeModel",
