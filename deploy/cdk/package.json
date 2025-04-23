@@ -15,6 +15,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "22.5.4",
     "aws-cdk": "2.160.0",
+    "cdk-docker-image-deployment": "^0.0.792",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
